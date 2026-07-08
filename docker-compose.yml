@@ -1,11 +1,16 @@
 services:
 
   frontend:
+    container_name: leadrecall-web
 
   backend:
+    container_name: leadrecall-api
 
   database:
+    container_name: leadrecall-db
 
   ai:
+    container_name: leadrecall-ai
 
   whatsapp:
+    container_name: baileys-api
