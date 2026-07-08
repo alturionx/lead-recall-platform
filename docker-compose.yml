@@ -1,16 +1,29 @@
 services:
 
-  frontend:
-    container_name: leadrecall-web
+  #frontend:
+    #container_name: leadrecall-web
 
-  backend:
-    container_name: leadrecall-api
+  #backend:
+    #container_name: leadrecall-api
 
   database:
     container_name: leadrecall-db
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
 
-  ai:
-    container_name: leadrecall-ai
+  #ai:
+    #container_name: leadrecall-ai
 
-  whatsapp:
-    container_name: baileys-api
+  #whatsapp:
+    #container_name: baileys-api
+volumes:
+  mysql_data:
