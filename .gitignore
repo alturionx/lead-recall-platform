@@ -1,0 +1,21 @@
+# Frontend
+node_modules/
+dist/
+
+# Backend
+target/
+.classpath/
+.project/
+
+# IDE
+.idea/
+.vscode/
+
+# Ambiente
+.env
+
+# Logs
+*.log
+
+# Docker
+*.pid
