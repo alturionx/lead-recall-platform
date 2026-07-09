@@ -1,33 +1,56 @@
 services:
 
+  # ==========================================================
+  # FRONTEND
+  # React + Nginx
+  # Responsável pela interface web da plataforma.
+  # ==========================================================
   frontend:
     container_name: leadrecall-web
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    restart: unless-stopped
     ports:
       - "3000:80"
     depends_on:
       - backend
+    networks:
+      - leadrecall-network
 
+  # ==========================================================
+  # BACKEND
+  # API REST desenvolvida em Spring Boot.
+  # Responsável por toda a regra de negócio da plataforma.
+  # ==========================================================
   backend:
     container_name: leadrecall-api
     build:
       context: ./backend
       dockerfile: Dockerfile
+    restart: unless-stopped
     depends_on:
       - database
+      - ai
+      - redis
     ports:
       - "8080:8080"
     environment:
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - leadrecall-network
 
+  # ==========================================================
+  # BANCO DE DADOS
+  # MySQL responsável pelo armazenamento persistente
+  # das informações da plataforma.
+  # ==========================================================
   database:
     container_name: leadrecall-db
-    image: mysql:8.0
-    restart: always
+    image: mysql:8.0.43
+    restart: unless-stopped
     environment:
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}
@@ -37,18 +60,66 @@ services:
       - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    networks:
+      - leadrecall-network
 
+  # ==========================================================
+  # INTELIGÊNCIA ARTIFICIAL
+  # Servidor Ollama responsável pela execução dos modelos LLM.
+  # O modelo Qwen2.5:3b será carregado neste serviço.
+  # ==========================================================
   ai:
     container_name: leadrecall-ai
-    image: ollama/ollama:latest
-    restart: always
+    image: ollama/ollama:0.11.9
+    restart: unless-stopped
     ports:
       - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama
+    networks:
+      - leadrecall-network
 
-    #whatsapp:
-    #container_name: baileys-api
+  # ==========================================================
+  # REDIS
+  # Utilizado para cache e mensageria.
+  # Também será utilizado pela Evolution API.
+  # ==========================================================
+  redis:
+    container_name: leadrecall-redis
+    image: redis:7.4-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - leadrecall-network
+
+  # ==========================================================
+  # EVOLUTION API
+  # Serviço responsável pela integração com o WhatsApp.
+  # (Será configurado na próxima etapa.)
+  # ==========================================================
+  # whatsapp:
+  #   ...
+
+# ==========================================================
+# VOLUMES
+# Responsáveis pela persistência dos dados dos containers.
+# ==========================================================
 volumes:
   mysql_data:
   ollama_data:
+  redis_data:
+
+# ==========================================================
+# REDE INTERNA
+# Todos os containers se comunicam por esta rede Docker.
+# Exemplo:
+# Backend -> database:3306
+# Backend -> ai:11434
+# Backend -> redis:6379
+# ==========================================================
+networks:
+  leadrecall-network:
+    driver: bridge
