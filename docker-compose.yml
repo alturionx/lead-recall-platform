@@ -1,10 +1,28 @@
 services:
 
-  #frontend:
-    #container_name: leadrecall-web
+  frontend:
+    container_name: leadrecall-web
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
 
-  #backend:
-    #container_name: leadrecall-api
+  backend:
+    container_name: leadrecall-api
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    depends_on:
+      - database
+    ports:
+      - "8080:8080"
+    environment:
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
 
   database:
     container_name: leadrecall-db
@@ -20,10 +38,17 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
 
-  #ai:
-    #container_name: leadrecall-ai
+  ai:
+    container_name: leadrecall-ai
+    image: ollama/ollama:latest
+    restart: always
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
 
-  #whatsapp:
+    #whatsapp:
     #container_name: baileys-api
 volumes:
   mysql_data:
+  ollama_data:
