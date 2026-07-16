@@ -18,14 +18,15 @@ public class MensagemController {
 
     private final ApplicationEventPublisher eventPublisher;
 
+    // salvar mensagem
     @PostMapping
     public ResponseEntity<Void> receive(@RequestBody MessageRequest request) {
 
         eventPublisher.publishEvent(
-                new MessageReceivedEvent(request)
-        );
+                new MessageReceivedEvent(request));
 
         return ResponseEntity.accepted().build();
     }
+
 
 }

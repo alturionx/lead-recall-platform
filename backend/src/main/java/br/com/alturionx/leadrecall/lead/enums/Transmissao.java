@@ -2,11 +2,9 @@ package br.com.alturionx.leadrecall.lead.enums;
 
 public enum Transmissao {
 
-    MANUAL("MANUAL"),
-    AUTOMATICO("AUTOMATICO"),
-    CVT("CVT");
+    MANUAL,
+    AUTOMATICA,
+    CVT,
+    NAO_INFORMADO
 
-    Transmissao(String string){
-
-    }
 }

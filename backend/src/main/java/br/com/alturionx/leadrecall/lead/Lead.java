@@ -39,12 +39,6 @@ public class Lead {
     @Column(length = 80)
     private String veiculoInteresse;
 
-    @Column(length = 50)
-    private String marca;
-
-    @Column(length = 80)
-    private String modelo;
-
     private Integer ano;
 
     @Column(length = 2000)
