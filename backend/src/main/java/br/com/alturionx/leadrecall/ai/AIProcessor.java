@@ -16,6 +16,7 @@ public class AIProcessor {
     public void process(MessageSavedEvent event) {
 
         var mensagem = event.mensagem();
+        System.out.println(mensagem);
 
         aiService.analyze(
                 mensagem.getConteudo()

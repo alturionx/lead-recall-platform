@@ -48,6 +48,11 @@ Subir toda a infraestrutura:
 docker compose up --build -d
 ```
 
+Baixar modelo da IA:
+```bash
+docker exec -it leadrecall-ai ollama pull qwen2.5:3b
+```
+
 Parar todos os containers:
 
 ```bash

@@ -1,5 +1,6 @@
 package br.com.alturionx.leadrecall.ai;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
@@ -10,18 +11,23 @@ import br.com.alturionx.leadrecall.ai.dto.OllamaResponse;
 public class OllamaClient {
 
     private final RestClient restClient;
+    private final String model;
 
-    public OllamaClient() {
+    public OllamaClient(
+            @Value("${ollama.url}") String url,
+            @Value("${ollama.model}") String model) {
+
+        this.model = model;
 
         this.restClient = RestClient.builder()
-                .baseUrl("http://leadrecall-ai:11434")
+                .baseUrl(url)
                 .build();
     }
 
     public String generate(String prompt) {
 
         OllamaRequest request = new OllamaRequest(
-                "qwen2.5:3b",
+                model,
                 prompt,
                 false
         );
